@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MyGCMNetworkManager</string>
+    <string name="set_scheduler">set scheduler</string>
+    <string name="cancel_sceduler">Cancel Sceduler</string>
 </resources>
