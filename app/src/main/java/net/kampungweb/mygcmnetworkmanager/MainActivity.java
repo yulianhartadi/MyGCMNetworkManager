@@ -10,7 +10,7 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button btnSetScheduler, btnCancelScheduler;
-
+    SchedulerTask schedulerTask;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,14 +20,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnSetScheduler = findViewById(R.id.btn_set_scheduler);
         btnSetScheduler.setOnClickListener(this);
         btnCancelScheduler.setOnClickListener(this);
+        schedulerTask = new SchedulerTask(this);
     }
 
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.btn_set_scheduler){
-            Toast.makeText(getApplicationContext(), "clicked", Toast.LENGTH_SHORT).show();
+            schedulerTask.createPeriodicTask();
+            Toast.makeText(getApplicationContext(), "Periodic Task clicked", Toast.LENGTH_SHORT).show();
+
         } else if (view.getId() == R.id.btn_cancel_scheduler){
-            Toast.makeText(getApplicationContext(), "clicked", Toast.LENGTH_SHORT).show();
+            schedulerTask.cancelPeriodicTask();
+            Toast.makeText(getApplicationContext(), "Periodic Task Canceled", Toast.LENGTH_SHORT).show();
         }
 
     }
