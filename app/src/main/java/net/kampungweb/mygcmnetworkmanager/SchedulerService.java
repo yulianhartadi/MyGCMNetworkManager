@@ -1,6 +1,5 @@
 package net.kampungweb.mygcmnetworkmanager;
 
-
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -13,6 +12,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.gcm.GcmNetworkManager;
+import com.google.android.gms.gcm.GcmTaskService;
 import com.google.android.gms.gcm.TaskParams;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.SyncHttpClient;
@@ -23,17 +23,21 @@ import java.text.DecimalFormat;
 
 import cz.msebera.android.httpclient.Header;
 
-public class SchedulerService {
+public class SchedulerService extends GcmTaskService {
+    /* GCM Task Service adalah sebuah class service yang bersifat worker thread as default
+     * secara default GCMTaskService sudah memiliki thread terpisah ketika diajalankan untuk
+     * proses yang bersifat Asynchronous
+     * */
 
     public static final String TAG = "GetWeather";
     public final String APP_ID = "4def30ead4b81ea6977856c9ce881982";
-    private final String CITY = "Surakarta,ID";
+    public final String CITY = "Surakarta,ID";
     public static String TAG_TASK_WEATHER_LOG = "WeatherTask";
 
     @Override
-    public int onRunTask(TaskParams taskParams){
+    public int onRunTask(TaskParams taskParams) {
         int result = 0;
-        if (taskParams.getTag().equals(TAG_TASK_WEATHER_LOG)){
+        if (taskParams.getTag().equals(TAG_TASK_WEATHER_LOG)) {
             getCurrentWeather();
             result = GcmNetworkManager.RESULT_SUCCESS;
         }
@@ -43,8 +47,7 @@ public class SchedulerService {
     private void getCurrentWeather() {
         Log.d("GetWeather", "Running");
         SyncHttpClient client = new SyncHttpClient();
-        String url = "https://api.openweathermap.org/data/2.5/weather?q="+CITY+"&appid="+ APP_ID;
-        Log.e(TAG, "getCurrentWeather: " + url);
+        String url = "https://api.openweathermap.org/data/2.5/weather?q=" + CITY + "&appid=" + APP_ID;
         client.get(url, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -69,16 +72,16 @@ public class SchedulerService {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                Log.d("Get Weather", "Failed");
+                Log.d("GetWeather", "Failed");
             }
         });
     }
 
     @Override
-    public void onInitializeTasks(){
+    public void onInitializeTasks() {
         super.onInitializeTasks();
         SchedulerTask schedulerTask = new SchedulerTask(this);
-        schedulerTask.createPeriodicTask();
+        schedulerTask.onCreatePeriodicTask();
     }
 
     private void showNotification(Context context, String title, String message, int notifId) {
