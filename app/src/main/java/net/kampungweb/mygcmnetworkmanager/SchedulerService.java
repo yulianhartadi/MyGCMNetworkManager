@@ -106,6 +106,7 @@ public class SchedulerService extends GcmTaskService {
                 .setVibrate(new long[]{1000, 1000, 1000, 1000})
                 .setSound(alarmSound);
 
+        assert notificationManager != null;
         notificationManager.notify(notifId, builder.build());
     }
 }
